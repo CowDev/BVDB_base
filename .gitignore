@@ -5,3 +5,4 @@ package.json
 # Ignore hidden mac files
 .*
 !.gitignore
+!.gitkeep
