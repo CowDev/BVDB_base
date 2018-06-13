@@ -1,0 +1,7 @@
+# Ignore gulp assets
+node_modules
+package.json
+
+# Ignore hidden mac files
+.*
+!.gitignore
