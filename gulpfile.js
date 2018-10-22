@@ -49,16 +49,16 @@ gulp.task('browserSync', function() {
 gulp.task('sass', function (){
     gulp.src(['./dev/sass/styles.scss'])
         .pipe(sass({
-            includePaths: ['./dev/sass','./dev/sass/base','./dev/sass/layout','./dev/sass/sections'],
+            includePaths: ['dev/sass','dev/sass/base','dev/sass/layout','dev/sass/sections'],
             outputStyle: 'expanded'
         }))
         .on('error', swallowError)
         .pipe(prefix(
             "last 1 version", "> 1%", "ie 8", "ie 7"
         ))
-        .pipe(gulp.dest('./dev/css'))
+        .pipe(gulp.dest('dev/css'))
         .pipe(crass({pretty:false}))
-        .pipe(gulp.dest('./prod/css'))
+        .pipe(gulp.dest('prod/css'))
         .pipe(browserSync.reload({ // Reloading with Browser Sync
             stream: true
         }));
@@ -66,19 +66,19 @@ gulp.task('sass', function (){
 
 // JS
 gulp.task('uglify', function(){
-    gulp.src('./dev/js/*.js')
+    gulp.src('dev/js/*.js')
         .pipe(uglify())
-        .pipe(gulp.dest('./prod/js'));
+        .pipe(gulp.dest('prod/js'));
 });
 
 // IMG
 gulp.task('images', function() {
-    return gulp.src('./dev/img/**/*.+(png|jpg|jpeg|gif|svg)')
+    return gulp.src('dev/img/**/*.+(png|jpg|jpeg|gif|svg)')
     // Caching images that ran through imagemin
         .pipe(cache(imagemin({
             interlaced: true,
         })))
-        .pipe(gulp.dest('./prod/img'))
+        .pipe(gulp.dest('prod/img'))
 });
 
 // Cleaning
@@ -89,17 +89,17 @@ gulp.task('clean', function() {
 })
 
 gulp.task('clean:prod', function() {
-    return del.sync(['./prod/**/*', '!./prod/img', '!./prod/img/**/*']);
+    return del.sync(['prod/**/*', '!prod/img', '!prod/img/**/*']);
 });
 
 // Watcher
 gulp.task('watch', function() {
-    gulp.watch('./dev/sass/**/*.scss', ['sass']);
-    gulp.watch('./dev/js/**/*.js', ['uglify']);
-    gulp.watch('./prod/js/*.js', browserSync.reload);
-    gulp.watch('./*.php', browserSync.reload);
-    gulp.watch('./**/*.php', browserSync.reload);
-    gulp.watch('./dev/img/*', ['images']);
+    gulp.watch('dev/sass/**/*.scss', ['sass']);
+    gulp.watch('dev/js/**/*.js', ['uglify']);
+    gulp.watch('dev/img/**/*.+(png|jpg|jpeg|gif|svg)', ['images']);
+    gulp.watch('prod/js/*.js', browserSync.reload);
+    gulp.watch('*.php', browserSync.reload);
+    gulp.watch('**/*.php', browserSync.reload);
 });
 
 // Prevent errors from breaking watch
@@ -117,7 +117,7 @@ function swallowError (error) {
 
 // Default function (for dev)
 gulp.task('default', function(callback) {
-    runSequence(['sass', 'uglify', 'browserSync'], 'watch',
+    runSequence(['sass', 'uglify', 'images', 'browserSync'], 'watch',
         callback
     )
 })
